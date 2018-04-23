@@ -1,0 +1,86 @@
+// The scenario you have used for your schema is: Game of Thrones
+
+
+// This is an example. Your own commands should *not* be commented out so we can pipe the file into the cypher-shell.
+// If you'd like to test your commands, you can run 'cat homework_4.txt | cypher-shell -u neo4j -p test' from
+// the vagrant box command line. Make sure neo4j is running first.
+// CREATE (a:person { name: 't' });
+
+
+
+MATCH (n)
+DETACH DELETE n;
+
+
+CREATE (a:person { name: "Daenerys Targaryen" , Born: "1500" });
+CREATE (b:person { name: "Jon Snow", Born: "1500" });
+CREATE (c:person { name: "Cersei Lannister", Born: "1490" });
+CREATE (d:person { name: "Jaime Lannister", Born: "1490" });
+CREATE (e:person { name: "Arya Stark", Born: "1510" });
+CREATE (f:continent { name: "westeros", Kingdoms: "3" });
+CREATE (g:person { name: "Tyrion Lannister" });
+CREATE (h:person { name: "Sansa Stark" });
+
+
+MATCH (a:person),(f:continent)
+WHERE a.name = "Daenerys Targaryen" AND f.name = "westeros"
+CREATE (a)-[r:LOVES]->(f)
+RETURN type(r), a.name, f.name;
+//
+MATCH (c:person),(d:person)
+WHERE c.name = "Cersei Lannister" AND d.name = "Jaime Lannister"
+CREATE (c)-[s:SIBLING]->(d)
+RETURN type(s), c.name, d.name;
+
+//
+MATCH (c:person),(d:person)
+WHERE c.name = "Cersei Lannister" AND d.name = "Jaime Lannister"
+CREATE (c)-[t:LOVES]->(d);
+//
+MATCH (d:person),(c:person)
+WHERE d.name = "Jaime Lannister" AND d.name = "Cersei Lannister"
+CREATE (d)-[u:SIBLING]->(c);
+
+//
+MATCH (d:person),(c:person)
+WHERE d.name = "Jaime Lannister" AND d.name = "Cersei Lannister"
+CREATE (d)-[v:LOVES]->(c);
+
+//
+MATCH (e:person),(h:person)
+WHERE e.name = "Arya Stark" AND h.name = "Sansa Stark"
+CREATE (e)-[w:SIBLING]->(h);
+//
+MATCH (h:person),(e:person)
+WHERE h.name = "Sansa Stark" AND e.name = "Arya Stark"
+CREATE (h)-[x:SIBLING]->(e);
+//
+MATCH (a:person),(b:person)
+WHERE a.name = "Daenerys Targaryen" AND b.name = "Jon Snow"
+CREATE (a)-[y:SIBLING{SINCE:"1500”}]->(b);
+//
+
+MATCH (b:person),(a:person)
+WHERE b.name = “Jon Snow” AND a.name = “Daenerys Targaryen”
+CREATE (b)-[t:SIBLING{SINCE:"1500"}]->(a);
+
+
+
+//
+MATCH (a:person),(f:continent)
+WHERE a.name = "Daenerys Targaryen" AND f.name = "westeros"
+CREATE (a)-[z:LEGITAMITE_QUEEN{SINCE:"1500"}]->(f)
+//
+MATCH (c:person),(f:continent)
+WHERE a.name = ‘Cersei Lannister’ AND f.name = "westeros"
+CREATE (c)-[j:ILLEGITAMITE_QUEEN{SINCE:"1530"}]->(f);
+//
+MATCH (d:person),(f:continent)
+WHERE a.name = "Jaime Lannister" AND f.name = "westeros"
+CREATE (d)-[k:PROTECTOR{SINCE:"1530"}]->(f);
+//
+
+
+
+
+
